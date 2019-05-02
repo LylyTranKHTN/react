@@ -11,7 +11,7 @@ function getUsers(url = `https://reqres.in/api/users`) {
         })
         .then(response => response.json())
         .then(response =>{
-          store.dispatch(actGetUsers(response.data))
+          store.dispatch(actGetUsers(response))
         })
       }
 
