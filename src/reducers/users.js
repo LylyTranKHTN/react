@@ -11,7 +11,7 @@ const users = (state = initialState, action) => {
                   state.users = action.payload.data
                   state.numOfUsers = action.payload.data.length
                   return {
-                        ...state
+                        ...state,
                   };
             }
             default: return {...state};

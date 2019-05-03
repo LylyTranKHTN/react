@@ -7,9 +7,13 @@ export const actGetUsersRequest = () => {
       }
 } 
 
-export const actGetUsers = (users) => {
-      return {
+/**
+ * action Get Users
+ * @param {object} users 
+ */
+export const actGetUsers = users => (
+      {
             type: Types.GET_USERS,
             payload: users 
       }
-}
+);

@@ -2,14 +2,14 @@ import React from 'react';
 
 import './App.css';
 //import Welcome from './components/welcome';
-import VisibleListUsers from './containers/VisibleListUsers'
+import ListUsers from './components/listUsers/index'
 
 //const user = {name: 'Ly', address: 'Lam Dong'};
 
 function App() {
   return (
     <div>
-      <VisibleListUsers />
+      <ListUsers />
     </div>
   );
 }
