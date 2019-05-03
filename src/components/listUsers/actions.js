@@ -21,6 +21,9 @@ export const ListUsersFailure = error => ({
       error,
 });
 
+/**
+ * action get list users
+ */
 export const actGetUsersRequest = () => 
       async (dispatch) => {
             try {
