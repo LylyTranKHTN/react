@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import _ from 'lodash';
 import {connect} from 'react-redux';
 import * as actions from './actions';
 import PropTypes from 'prop-types';
@@ -15,27 +14,32 @@ class ListUsers extends Component{
       constructor(props) {
             super(props);
             this.state = {data: [], pages: 0, pageSize: 0, pageIndex: 0};
+
+            this.onPageChange = this.onPageChange.bind(this)
           }
     
-      componentDidMount = () => {
-            console.log('fetch api')
+      componentDidMount () {
+            console.log('didmount')
             this.props.fetchAPIUsers();
       }
 
-      static getDerivedStateFromProps(nextProps, prevState) {
-            if (nextProps.users !== prevState && (typeof prevState.data === 'undefined' || prevState.data.length === 0)) {
-                  console.log('state')
-                  for (var i = nextProps.users.per_page; i < nextProps.users.total; i++) {
-                        nextProps.users.users.push({"id":i + 1,"first_name":"Emma","last_name":"Wong","avatar":""})
-                  }
-                  return {
-                        data: nextProps.users.users,
+      componentWillReceiveProps(nextProps) {
+            if (nextProps.users) {
+
+                  this.setState({
+                        data: [
+                              ...nextProps.users.data, 
+                        ],
                         pages: nextProps.users.total_pages,
                         pageSize: nextProps.users.per_page,
                         pageIndex: nextProps.users.page,
-                  }
+                  });
             }
-            return null;
+      }
+
+      async onPageChange(pageIndex) {
+            await this.props.fetchAPIUsers()
+            this.setState({pageIndex: pageIndex + 1})
       }
 
       render() {
@@ -55,31 +59,27 @@ class ListUsers extends Component{
                   Header: 'Avatar',
                   accessor: 'avatar' 
                 }]
-            if (this.props.users.status === LIST_USERS_SUCCESS) {
-                  console.log(this.state.data.slice(
-                        (this.state.pageIndex - 1) * this.state.pageSize,
-                        this.state.pageIndex * this.state.pageSize
-                        ))
+            if (this.props.users && this.props.status === LIST_USERS_SUCCESS) {
                   return(
                         <ReactTable
                               data={this.state.data}
+                              manual
                               columns={columns}
                               page={this.state.pageIndex - 1}
                               pageSize={this.state.pageSize}
                               pages={this.state.pages}
 
                               onPageChange={(pageIndex) => {
-                                    console.log(pageIndex)
-                                    this.setState({pageIndex: pageIndex + 1})
+                                    this.onPageChange(pageIndex)
                               }}
                               onPageSizeChange={(pageSize) => {
                                     this.setState({pageSize: pageSize})
                               }}
                         />
                   )}
-            if (this.props.users.status === LIST_USERS_FAILURE) {
+            if (this.props.users && this.props.status === LIST_USERS_FAILURE) {
                   return (
-                        <div>{this.props.users.error}</div>
+                        <div>{this.props.error}</div>
                   )
             } 
             else {
@@ -93,7 +93,10 @@ class ListUsers extends Component{
 
 const mapStateToProps = state => {
       return {
-            users: state.users
+            users: state.usersReducer.data,
+            status: state.usersReducer.status,
+            error: state.usersReducer.error,
+
       }
   }
   

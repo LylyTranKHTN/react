@@ -38,6 +38,7 @@ export const actGetUsersRequest = () =>
                   .then(response => response.json())
                   .then(response =>{
                         dispatch(ListUsersSuccess(response))
+                        console.log('fetch api')
                   })
             }
             catch (e) {
